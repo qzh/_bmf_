@@ -1,5 +1,6 @@
 package font
 {
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.filters.BlurFilter;
@@ -10,12 +11,14 @@ package font
 	public final class CharRoot extends Sprite
 	{
 		public var layout:CharLayout;
+		public var rootView:DisplayObjectContainer;
 		
 		private var queue:BitmapCharQueue;
 		
 		public function CharRoot()
 		{
 			layout = new CharLayout();
+			layout.addEventListener(Event.RESIZE, onLayoutResize);
 			this.addChild(layout);
 			
 			CharManager.getInstance().characterSet = CharManager.kCharOnly;
@@ -25,6 +28,11 @@ package font
 			queue.addEventListener(Event.COMPLETE, onCharQueueComplete);
 			
 			//test
+			//queue.start();
+		}
+		
+		public function load():void
+		{
 			queue.start();
 		}
 		
@@ -39,6 +47,7 @@ package font
 			
 			if(layout)
 			{
+				layout.removeEventListener(Event.RESIZE, onLayoutResize);
 				layout.dispose();
 				layout = null;
 			}
@@ -53,6 +62,15 @@ package font
 			layout.addFilter(new BlurFilter()); 
 			layout.addFilter(new DropShadowFilter());
 			layout.updateFilter();
+		}
+		
+		private function onLayoutResize(e:Event):void
+		{
+			if(this.rootView)
+			{
+				//this.x = (this.rootView.width - this.width)/2;
+				//this.y = (this.rootView.height - this.height)/2;
+			}
 		}
 	}
 }

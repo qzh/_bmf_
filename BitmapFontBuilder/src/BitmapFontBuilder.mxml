@@ -2,46 +2,136 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   width="1024" height="768" minWidth="955" minHeight="600">
+			   minWidth="1024" minHeight="768" 
+			   creationComplete="application_creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import font.CharManager;
+			import font.CharRoot;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.components.supportClasses.GroupBase;
+			import spark.events.IndexChangeEvent;
+			
+			private var charRoot:CharRoot;
+			protected function application_creationCompleteHandler(event:FlexEvent):void
+			{
+				characterArea.text = CharManager.kCharOnly;
+				
+				var font:Array = Font.enumerateFonts(true);
+				this.fontList.dataProvider = new ArrayCollection(font);
+				this.fontList.selectedIndex = 0;
+				
+				charRoot = new CharRoot();
+				
+				var firstFont:Font = font[0] as Font;
+				CharManager.getInstance().textFormat = new TextFormat(firstFont.fontName, 64, 0xFF0000);
+				
+				var bp:GroupBase = new GroupBase();
+				bp.addChild(charRoot);
+				layoutGroupView.addElement(bp);
+				charRoot.rootView = layoutGroupView;
+				
+				charRoot.load();
+				
+				addFilterButton.dataProvider = ["Blur", "Drop Shadow"];
+			}
+			
+			protected function fontList_changeHandler(event:IndexChangeEvent):void
+			{
+				var currFont:String = CharManager.getInstance().textFormat.font;
+				var select:String = (fontList.selectedItem as Font).fontName;
+				if(currFont != select)
+				{
+					CharManager.getInstance().textFormat.font = select;
+					charRoot.load();
+				}
+			}
+			
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<mx:ViewStack id="mainView" x="0" y="0" width="100%" height="100%" selectedIndex="1">
-		<s:NavigatorContent id="loginContent" width="100%" height="100%" label="login">
-			<s:layout>
-				<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
-			</s:layout>
-			<s:Form width="349" height="161">
-				<s:FormHeading label="Login"/>
-				<s:FormItem label="e-mail">
-					<s:TextInput width="240"/>
-				</s:FormItem>
-				<s:FormItem label="password">
-					<s:TextInput width="240" displayAsPassword="true"/>
-				</s:FormItem>
-			</s:Form>
-		</s:NavigatorContent>
-		<s:NavigatorContent id="editorContent" width="100%" height="100%" label="editor">
-			<s:HGroup x="597" y="10" width="417" height="46" gap="10" horizontalAlign="right"
+	
+	<s:BorderContainer width="100%" height="70" backgroundAlpha="1" backgroundColor="#EFEFEF" borderVisible="false">
+		<s:HGroup width="100%" height="70" verticalAlign="middle" paddingLeft="5" paddingRight="5">
+			<s:HGroup x="2" y="10" width="570" height="70" verticalAlign="middle">
+				<s:Button id="loadButton" height="64" label="Load"/>
+				<s:Button id="saveButton" height="64" label="Save"/>
+				<s:Button id="exportButton" height="64" label="Export"/>
+			</s:HGroup>
+			<s:HGroup x="597" y="10" width="100%" height="70" gap="10" horizontalAlign="right"
 					  verticalAlign="middle">
 				<s:Label y="8" width="200" height="30" fontSize="20" text="User Name"
 						 textAlign="right" verticalAlign="middle"/>
-				<s:Button y="7" height="30" label="Reg"/>
-				<s:Button height="30" label="Sign out"/>
+				<s:Button y="7" height="64" label="Reg"/>
+				<s:Button height="64" label="Sign out"/>
 			</s:HGroup>
-			<s:List id="fontList" x="10" y="64" width="200" height="694"></s:List>
-			<s:BorderContainer x="764" y="64" width="250" height="694">
-				<s:layout>
-					<s:VerticalLayout/>
-				</s:layout>
-			</s:BorderContainer>
-			<s:BorderContainer x="218" y="64" width="538" height="694">
-			</s:BorderContainer>
-			<s:HGroup x="10" y="10" width="579" height="46" verticalAlign="middle">
-				<s:Button id="loadButton" height="30" label="Load"/>
-				<s:Button id="saveButton" height="30" label="Save"/>
-				<s:Button id="exportButton" height="30" label="Export"/>
+			
+		</s:HGroup>
+		
+	</s:BorderContainer>
+	
+	<s:HGroup width="100%" height="100%">
+		<s:VGroup x="10" y="64" width="230" height="100%">
+			<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle">
+				<s:NumericStepper id="fontSizeStepper" y="-8" width="82" height="30" fontSize="18"
+								  maximum="90" minimum="8" stepSize="1" value="64"/>
+				<mx:ColorPicker width="30" height="30"/>
 			</s:HGroup>
-		</s:NavigatorContent>
-	</mx:ViewStack>
+			
+			<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
+				<s:TextInput width="100%" id="searchFontInput"/>
+				<s:Button id="searchFontBtn" width="40" height="26" label="GO"/>
+			</s:HGroup>
+			
+			<s:List id="fontList" width="100%" height="100%" horizontalScrollPolicy="off"
+					itemRenderer="font.view.FontNameRenderer" change="fontList_changeHandler(event)"/>
+		</s:VGroup>
+		
+		<s:Scroller x="218" y="64" width="100%" height="100%">
+			
+			<s:HGroup width="100%" height="100%" id="layoutGroupView">
+			</s:HGroup>
+		</s:Scroller>
+		
+		<s:VGroup x="764" y="64" width="280" height="100%" paddingRight="5">
+			<mx:Accordion width="100%" height="100%" headerHeight="30" selectedIndex="2" creationPolicy="all">
+				<s:NavigatorContent id="glyphContent" width="100%" height="100%" label="Glyph">
+				</s:NavigatorContent>
+				<s:NavigatorContent id="textureContent" width="100%" height="100%" label="Texture">
+				</s:NavigatorContent>
+				<s:NavigatorContent id="filtersContent" width="100%" height="100%" label="Filters">
+					<s:layout>
+						<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"/>
+					</s:layout>
+					<s:HGroup width="100%">
+						<mx:PopUpMenuButton label="Add Filter" id="addFilterButton"/>
+						
+						<s:Spacer width="100%"/>
+						
+						<s:Button width="40" label="Edit"/>
+						<s:Button width="40" label="Up"/>
+						<s:Button width="40" label="Down"/>
+						
+					</s:HGroup>
+					<s:VGroup id="filterList" width="100%" height="100%" />
+				</s:NavigatorContent>
+				<s:NavigatorContent id="charactersContent" width="100%" height="100%" label="Characters">
+					<s:TextArea id="characterArea" x="10" y="10" width="253" height="241" fontSize="16"/>
+					<s:Button x="10" y="259" height="30" label="ASCII"/>
+					<s:Button x="85" y="259" height="30" label="NEHE"/>
+					<s:Button x="193" y="259" height="30" label="Update"/>
+				</s:NavigatorContent>
+			</mx:Accordion>
+		</s:VGroup>
+		
+	</s:HGroup>
 </s:Application>

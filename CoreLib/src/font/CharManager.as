@@ -7,6 +7,7 @@ package font
 	import flash.geom.Matrix;
 	import flash.text.TextFormat;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	
 	import nochump.util.zip.ZipEntry;
 	import nochump.util.zip.ZipOutput;
@@ -15,11 +16,10 @@ package font
 	{
 		public static const kExtXML:int = 0;
 		
-		public static const kCharOnly:String = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		public static const kASCII:String = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ";
-		public static const kNEHE:String = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+		public static const kCharOnly:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		public static const kASCII:String = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ";
+		public static const kNEHE:String = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 		
-		public var characterSet:String = kCharOnly;
 		public var textFormat:TextFormat;
 		
 		public var fileName:String = "arial";
@@ -31,6 +31,29 @@ package font
 			textFormat = new TextFormat();
 		}
 		
+		private var _characterSet:String = kCharOnly;
+		public function get characterSet():String
+		{
+			return _characterSet;
+		}
+
+		public function set characterSet(value:String):void
+		{
+			if(_characterSet != value)
+			{
+				value = value + " ";
+				var temp:Dictionary = new Dictionary();
+				for(var i:int = 0; i < value.length; i++)
+				{
+					var char:String = value.charAt(i);
+					temp[char] = char;
+				}
+				var arr:Vector.<String> = new Vector.<String>();
+				for each(var p:String in temp)arr.push(p);
+				_characterSet = arr.join("");
+			}
+		}
+
 		public function set bitmapChar(v:Vector.<BitChar>):void
 		{
 			if(_bitmapChar != v)

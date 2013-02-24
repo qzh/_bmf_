@@ -22,7 +22,7 @@ package font
 				container = new Bitmap(char.displayBitmapData, "auto", true);
 				this.addChild(container);
 			}
-			//this.showRect();
+			this.showRect();
 		}
 		
 		public function showRect():void

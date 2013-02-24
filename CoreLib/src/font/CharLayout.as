@@ -112,6 +112,8 @@ package font
 			background.graphics.beginFill(0, 0.3);
 			background.graphics.drawRect(0,0,currWidth,currHeight);
 			background.graphics.endFill();
+			
+			this.dispatchEvent(new Event(Event.RESIZE));
 		}
 		
 		public function getNextPowerOfTwo(number:int):int
