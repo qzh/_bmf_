@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="260" height="230" creationComplete="glow_creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import flash.filters.BitmapFilterQuality;
+			
+			protected function glow_creationCompleteHandler(event:FlexEvent):void
+			{
+				var arr:Array = [];
+				arr.push({label:"low", value:BitmapFilterQuality.LOW});
+				arr.push({label:"medium", value:BitmapFilterQuality.MEDIUM});
+				arr.push({label:"high", value:BitmapFilterQuality.HIGH});
+				this.qualityCombo.dataProvider = new ArrayCollection(arr);
+				this.qualityCombo.selectedIndex = 0;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:BorderContainer width="100%" backgroundAlpha="1" backgroundColor="#EFEFEF" borderVisible="false">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>
+		<s:Label fontSize="16" text="Glow" paddingLeft="8"/>
+	</s:BorderContainer>
+	<s:VGroup width="100%" height="100%" paddingLeft="20">
+		<s:HGroup width="225" verticalAlign="middle">
+			<s:Label text="Blur X:"/>
+			<s:NumericStepper id="xBlurStepper" maximum="255" minimum="0" stepSize="1" value="5"/>
+		</s:HGroup>
+		<s:HGroup width="225" verticalAlign="middle">
+			<s:Label text="Blur Y:"/>
+			<s:NumericStepper id="yBlurStepper" maximum="255" minimum="0" stepSize="1" value="5"/>
+		</s:HGroup>
+		<s:HGroup width="225" verticalAlign="middle">
+			<s:Label text="Strength:"/>
+			<s:NumericStepper id="strengthBlurStepper" maximum="25500" minimum="0" stepSize="1" value="100"/>
+		</s:HGroup>
+		<s:HGroup width="225" verticalAlign="middle">
+			<s:Label text="Quality:"/>
+			<s:ComboBox id="qualityCombo"/>
+		</s:HGroup>
+		<s:HGroup width="225" verticalAlign="middle">
+			<s:Label text="Color:"/>
+			<mx:ColorPicker id="colorPicker"/>
+		</s:HGroup>
+		<s:HGroup width="225" verticalAlign="middle">
+			<s:Label text="Knockout:"/>
+			<s:CheckBox label="CheckBox" id="knockoutBox"/>
+			
+		</s:HGroup>
+		<s:HGroup width="225" verticalAlign="middle">
+			<s:Label text="Inner Glow:"/>
+			<s:CheckBox label="CheckBox" id="innerBox"/>
+			
+		</s:HGroup>
+	</s:VGroup>
+</s:Group>

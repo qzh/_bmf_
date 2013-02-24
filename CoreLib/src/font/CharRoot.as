@@ -5,6 +5,7 @@ package font
 	import flash.events.Event;
 	import flash.filters.BlurFilter;
 	import flash.filters.DropShadowFilter;
+	import flash.filters.GlowFilter;
 	import flash.geom.Point;
 	import flash.text.TextFormat;
 	
@@ -59,9 +60,10 @@ package font
 			CharManager.getInstance().bitmapChar = f;
 			
 			layout.layout(f, new Point(2,2));
-			layout.addFilter(new BlurFilter()); 
-			layout.addFilter(new DropShadowFilter());
-			layout.updateFilter();
+			//layout.addFilter(new BlurFilter()); 
+			//layout.addFilter(new DropShadowFilter());
+			//layout.updateFilter();
+			
 		}
 		
 		private function onLayoutResize(e:Event):void
