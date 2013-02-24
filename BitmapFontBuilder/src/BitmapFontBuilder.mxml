@@ -6,4 +6,42 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	<mx:ViewStack id="mainView" x="0" y="0" width="100%" height="100%" selectedIndex="1">
+		<s:NavigatorContent id="loginContent" width="100%" height="100%" label="login">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+			</s:layout>
+			<s:Form width="349" height="161">
+				<s:FormHeading label="Login"/>
+				<s:FormItem label="e-mail">
+					<s:TextInput width="240"/>
+				</s:FormItem>
+				<s:FormItem label="password">
+					<s:TextInput width="240" displayAsPassword="true"/>
+				</s:FormItem>
+			</s:Form>
+		</s:NavigatorContent>
+		<s:NavigatorContent id="editorContent" width="100%" height="100%" label="editor">
+			<s:HGroup x="597" y="10" width="417" height="46" gap="10" horizontalAlign="right"
+					  verticalAlign="middle">
+				<s:Label y="8" width="200" height="30" fontSize="20" text="User Name"
+						 textAlign="right" verticalAlign="middle"/>
+				<s:Button y="7" height="30" label="Reg"/>
+				<s:Button height="30" label="Sign out"/>
+			</s:HGroup>
+			<s:List id="fontList" x="10" y="64" width="200" height="694"></s:List>
+			<s:BorderContainer x="764" y="64" width="250" height="694">
+				<s:layout>
+					<s:VerticalLayout/>
+				</s:layout>
+			</s:BorderContainer>
+			<s:BorderContainer x="218" y="64" width="538" height="694">
+			</s:BorderContainer>
+			<s:HGroup x="10" y="10" width="579" height="46" verticalAlign="middle">
+				<s:Button id="loadButton" height="30" label="Load"/>
+				<s:Button id="saveButton" height="30" label="Save"/>
+				<s:Button id="exportButton" height="30" label="Export"/>
+			</s:HGroup>
+		</s:NavigatorContent>
+	</mx:ViewStack>
 </s:Application>
