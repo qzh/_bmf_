@@ -93,27 +93,34 @@ package font
 			
 			var ci:Rectangle = source.getCharBoundaries(0);
 			
-			matrix.tx = -ci.x
-			matrix.ty = -ci.y;
-			
-			var data:BitmapData = new BitmapData(ci.width, ci.height, true, 0x00000000);
-			data.draw(source, matrix);
-			
-			var bounds:Rectangle = data.getColorBoundsRect(0xFFFFFFFF, 0x000000, false);
-			
-			if(bounds.width > 0 && bounds.height > 0)
+			if(ci)
 			{
-				var dst:BitmapData = new BitmapData(bounds.width, bounds.height, true, 0x00000000);
-				dst.copyPixels(data, bounds, new Point());
-				data.dispose();
+				matrix.tx = -ci.x
+				matrix.ty = -ci.y;
+				
+				var data:BitmapData = new BitmapData(ci.width, ci.height, true, 0x00000000);
+				data.draw(source, matrix);
+				
+				var bounds:Rectangle = data.getColorBoundsRect(0xFFFFFFFF, 0x000000, false);
+				
+				if(bounds.width > 0 && bounds.height > 0)
+				{
+					var dst:BitmapData = new BitmapData(bounds.width, bounds.height, true, 0x00000000);
+					dst.copyPixels(data, bounds, new Point());
+					data.dispose();
+				}
+				else
+				{
+					dst = data;
+				}
+				var ret:BitChar = new BitChar(char, dst, bounds, ci);
+				return ret;
 			}
 			else
 			{
-				dst = data;
+				return new BitChar(char, new BitmapData(1,1,true,0), new Rectangle(0,0,1,1), ci);
 			}
 			
-			var ret:BitChar = new BitChar(char, dst, bounds, ci);
-			return ret;
 		}
 	}
 }

@@ -100,18 +100,18 @@ package font
 					if(next.width + padding.x + cursorX > currWidth)
 					{
 						cursorX = 0;
-						cursorY += lineHeight;
+						cursorY += lineHeight + padding.y;
 						lineHeight = 0;
 					}
 				}
 			}
 			currHeight = cursorY + lineHeight;
-			trace(currHeight, this.height);
-			
 			currHeight = this.getNextPowerOfTwo(currHeight);
 			background.graphics.beginFill(0, 0.3);
 			background.graphics.drawRect(0,0,currWidth,currHeight);
 			background.graphics.endFill();
+			trace(currWidth, currHeight);
+			
 			
 			this.dispatchEvent(new Event(Event.RESIZE));
 		}

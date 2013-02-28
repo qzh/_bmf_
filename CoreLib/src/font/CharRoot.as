@@ -32,6 +32,13 @@ package font
 			//queue.start();
 		}
 		
+		private static var _instance:CharRoot;
+		public static function getInstance():CharRoot
+		{
+			if(!_instance)_instance = new CharRoot();
+			return _instance;
+		}
+		
 		public function load():void
 		{
 			queue.start();

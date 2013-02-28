@@ -12,9 +12,11 @@
 		<![CDATA[
 			import font.CharManager;
 			import font.CharRoot;
-			import font.view.GlowFilterItem;
+			import font.view.GlowFilterGroup;
 			
 			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			import mx.events.ColorPickerEvent;
 			import mx.events.FlexEvent;
 			import mx.events.MenuEvent;
 			
@@ -30,7 +32,7 @@
 				this.fontList.dataProvider = new ArrayCollection(font);
 				this.fontList.selectedIndex = 0;
 				
-				charRoot = new CharRoot();
+				charRoot = CharRoot.getInstance();
 				
 				var firstFont:Font = font[0] as Font;
 				CharManager.getInstance().textFormat = new TextFormat(firstFont.fontName, 64, 0xFF0000);
@@ -60,8 +62,68 @@
 			{
 				event.label;
 				
-				var gl:GlowFilterItem = new GlowFilterItem();
+				var gl:IVisualElement = new GlowFilterGroup();
 				filterList.addElement(gl);
+			}
+			
+			protected function updateCharacterButton_clickHandler(event:Event = null):void
+			{
+				CharManager.getInstance().characterSet = characterArea.text;
+				charRoot.load();
+			}
+			
+			protected function asciiButton_clickHandler(event:MouseEvent):void
+			{
+				characterArea.text = CharManager.kASCII;
+				updateCharacterButton_clickHandler(null);
+			}
+			
+			protected function neheButton_clickHandler(event:MouseEvent):void
+			{
+				characterArea.text = CharManager.kNEHE;
+				updateCharacterButton_clickHandler(null);
+			}
+			
+			protected function fontSizeStepper_changeHandler(event:Event):void
+			{
+				var currSize:int = int(CharManager.getInstance().textFormat.size);
+				var select:int = fontSizeStepper.value;
+				if(currSize != select)
+				{
+					CharManager.getInstance().textFormat.size = select;
+					charRoot.load();
+				}
+			}
+			
+			protected function fontColorPicker_changeHandler(event:ColorPickerEvent):void
+			{
+				var currSize:uint = uint(CharManager.getInstance().textFormat.color);
+				var select:uint = fontColorPicker.selectedColor;
+				if(currSize != select)
+				{
+					CharManager.getInstance().textFormat.color = select;
+					charRoot.load();
+				}
+			}
+			
+			protected function searchFontBtn_clickHandler(event:Event = null):void
+			{
+				var fontCollection:ArrayCollection = fontList.dataProvider as ArrayCollection;
+				var search:String = searchFontInput.text;
+				
+				if(search.length < 1) fontCollection.filterFunction = null;
+				else fontCollection.filterFunction = filterByFontName;
+				
+				fontCollection.refresh();
+			}
+			
+			private function filterByFontName(item:Font):Boolean
+			{
+				var search:String = searchFontInput.text || "";
+				if(search.length < 1) return false;
+				search = search.toLocaleLowerCase();
+				var fontName:String = item.fontName.toLocaleLowerCase();
+				return fontName.search(search) != -1;
 			}
 			
 		]]>
@@ -93,13 +155,13 @@
 		<s:VGroup x="10" y="64" width="230" height="100%">
 			<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle">
 				<s:NumericStepper id="fontSizeStepper" y="-8" width="82" height="30" fontSize="18"
-								  maximum="90" minimum="8" stepSize="1" value="64"/>
-				<mx:ColorPicker width="30" height="30"/>
+								  maximum="90" minimum="8" stepSize="1" value="64" change="fontSizeStepper_changeHandler(event)"/>
+				<mx:ColorPicker width="30" height="30" id="fontColorPicker" change="fontColorPicker_changeHandler(event)"/>
 			</s:HGroup>
 			
 			<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
-				<s:TextInput width="100%" id="searchFontInput"/>
-				<s:Button id="searchFontBtn" width="40" height="26" label="GO"/>
+				<s:TextInput width="100%" id="searchFontInput" change="searchFontBtn_clickHandler()"/>
+				<s:Button id="searchFontBtn" width="40" height="26" label="GO" click="searchFontBtn_clickHandler(event)"/>
 			</s:HGroup>
 			
 			<s:List id="fontList" width="100%" height="100%" horizontalScrollPolicy="off"
@@ -125,12 +187,6 @@
 					<s:HGroup width="100%">
 						<mx:PopUpMenuButton label="Add Filter" id="addFilterButton" itemClick="addFilterButton_itemClickHandler(event)"/>
 						
-						<s:Spacer width="100%"/>
-						
-						<s:Button width="40" label="Edit"/>
-						<s:Button width="40" label="Up"/>
-						<s:Button width="40" label="Down"/>
-						
 					</s:HGroup>
 					
 					<s:Scroller width="100%" height="100%" horizontalScrollPolicy="off">
@@ -140,9 +196,9 @@
 				</s:NavigatorContent>
 				<s:NavigatorContent id="charactersContent" width="100%" height="100%" label="Characters">
 					<s:TextArea id="characterArea" x="10" y="10" width="253" height="241" fontSize="16"/>
-					<s:Button x="10" y="259" height="30" label="ASCII"/>
-					<s:Button x="85" y="259" height="30" label="NEHE"/>
-					<s:Button x="193" y="259" height="30" label="Update"/>
+					<s:Button x="10" y="259" height="30" label="ASCII" id="asciiButton" click="asciiButton_clickHandler(event)"/>
+					<s:Button x="85" y="259" height="30" label="NEHE" id="neheButton" click="neheButton_clickHandler(event)"/>
+					<s:Button x="193" y="259" height="30" label="Update" id="updateCharacterButton" click="updateCharacterButton_clickHandler(event)"/>
 				</s:NavigatorContent>
 			</mx:Accordion>
 		</s:VGroup>
